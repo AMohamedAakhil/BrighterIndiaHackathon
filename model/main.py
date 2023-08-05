@@ -1,7 +1,8 @@
 import moviepy.editor as mp
 import requests
 import openai
-import osfrom pytube import YouTube
+import os
+from pytube import YouTube
 
 def get_sub(link):
     def download_360p_mp4_videos(url: str, outpath: str = "./", custom_filename: str = "my_video.mp4"):
@@ -10,7 +11,7 @@ def get_sub(link):
     
     download_360p_mp4_videos(
             link,
-            "./downloads",
+            "../generator/",
             "vid.mp4")
 
 
@@ -19,7 +20,9 @@ def get_sub(link):
 
     video = mp.VideoFileClip(filename)
     video.audio.write_audiofile(audiofilename)
-    openai.api_key = "OPENAI"
+    openai.api_key = "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"
+
+    #openai.api_key = "OPENAI"
     
     result = openai.Audio.transcribe(
         model='whisper-1',
