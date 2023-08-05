@@ -5,14 +5,17 @@ import numpy as np
 import cv2
 from datetime import timedelta
 
-def subtitle_gen(video_path, output_path, subtitles1):
-    cap = cv2.VideoCapture(video_path)
-    subs = []
-    for line in subtitles1.split("\n"):
-        if line.strip().isdigit():  # Check if the line starts with a digit (assumed to be a time value)
-            subs.append(line.strip())
-    subtitles = subs
-    print("The subtitles are looking like this:", subtitles)
+import cv2
+
+
+def sub_gen(input_video_path, out_video_path, subtitles):
+    cap = cv2.VideoCapture(input_video_path)
+    subs = {}
+    #for line in subtitles.splitlines:
+    for line in subtitles:
+        if line.strip()[0].isdigit():  # Check if the line starts with a digit (assumed to be a time value)
+            subs[float(line.split(" ")[0])] = line[4:]
+
     font_size = 1  # Adjust font size
     font_color = (0, 255, 255)  # Yellow color (BGR)
     font_stroke_color = (0, 0, 0)
@@ -22,116 +25,48 @@ def subtitle_gen(video_path, output_path, subtitles1):
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     fps = int(cap.get(5))
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
-    subtitle_index = 0
-    start_time = 0
-    a= 0
-    while cap.isOpened():
-        a+= 1
-        ret, frame = cap.read()
-        print("reading frame number", a)
+    out = cv2.VideoWriter(out_video_path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+    #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    #out = cv2.VideoWriter(out_video_path, fourcc, fps, (frame_width, frame_height))
+        
 
+
+
+    while cap.isOpened():
+        ret, frame = cap.read()
         if not ret:
             break
+        current_time = cap.get(cv2.CAP_PROP_POS_MSEC)/1000
+        try:
+            rnd_ct = round(current_time, 2)
+            subtitle_text = subs[rnd_ct]
+            print(subtitle_text)
 
-        current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000
+            text_size = cv2.getTextSize(subtitle_text, font, font_size, font_thickness)[0]
+            text_x = int((frame_width - text_size[0]) / 2)
+            text_y = int(frame_height / 2 + text_size[1] / 2)
 
-        if subtitle_index < len(subtitles):
-            subtitle_start = float(subtitles[subtitle_index].split()[0])
-            subtitle_text = " ".join(subtitles[subtitle_index].split()[1:])
+            stroke_thickness = int(text_size[0] * 0.03)
+            cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_stroke_color,
+                        stroke_thickness, font_line_type)
+            cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_color, font_thickness,
+                        font_line_type)       
+            
 
-            if current_time >= start_time + subtitle_start and current_time < start_time + subtitle_start + 2:
-                text_size = cv2.getTextSize(subtitle_text, font, font_size, font_thickness)[0]
-                text_x = int((frame_width - text_size[0]) / 2)
-                text_y = int(frame_height / 2 + text_size[1] / 2)
-
-                stroke_thickness = int(text_size[0] * 0.03)
-                cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_stroke_color,
-                            stroke_thickness, font_line_type)
-                cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_color, font_thickness,
-                            font_line_type)
-            elif current_time >= start_time + subtitle_start + 2:
-                subtitle_index += 1
-                start_time = current_time
+        except:
+            pass
 
         out.write(frame)
-
         if current_time >= 120:
             break
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    cap.release()
-    out.release()
-    cv2.destroyAllWindows()
+        cap.release()
+        out.release()
+  
 
-
-'''
-def subtitle_gen(video_path, output_path, subtitles1):
-    cap = cv2.VideoCapture(video_path)
-    subs = []
-    for line in subtitles1.split("\n"):
-        if line.strip().isdigit():  # Check if the line starts with a digit (assumed to be a time value)
-            subs.append(line.strip())
-    subtitles = subs
-    font_size = 1  # Adjust font size
-    font_color = (0, 255, 255)  # Yellow color (BGR)
-    font_stroke_color = (0, 0, 0)
-    font_thickness = 4  # Thicker font
-    font_line_type = cv2.LINE_AA
-    font_path_regular = "Mont-Regular.ttf"
-    font_path_bold = "Mont-HeavyDEMO.otf"
-    font = cv2.FONT_HERSHEY_SIMPLEX # Change to a bold font
-    output_path = "output_video.mp4"
-    frame_width = int(cap.get(3))
-    frame_height = int(cap.get(4))
-    fps = int(cap.get(5))
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))   
-    subtitle_index = 0
-    start_time = 0  
- 
-    while cap.isOpened():
-        ret, frame = cap.read()
- 
-        if not ret:
-            break
- 
-        current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000  
- 
- 
-        if subtitle_index < len(subtitles):
-            subtitle_start = float(subtitles[subtitle_index].split()[0])
-            subtitle_text = " ".join(subtitles[subtitle_index].split()[1:])
- 
-            if current_time >= start_time + subtitle_start and current_time < start_time + subtitle_start + 2:
- 
-                text_size = cv2.getTextSize(subtitle_text, font, font_size, font_thickness)[0]
-                text_x = int((frame_width - text_size[0]) / 2)
-                text_y = int(frame_height / 2 + text_size[1] / 2)
- 
-                stroke_thickness = int(text_size[0] * 0.03)  
-                cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_stroke_color, stroke_thickness, font_line_type)
-                cv2.putText(frame, subtitle_text, (text_x, text_y), font, font_size, font_color, font_thickness, font_line_type)
-            elif current_time >= start_time + subtitle_start + 2:
-                subtitle_index += 1
-                start_time = current_time
- 
-        out.write(frame)
- 
- 
-        if current_time >= 120:  
-            break
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
- 
-    cap.release()
-    out.release()
-    cv2.destroyAllWindows()
-'''
 def convert_srt_to_custom_format(srt_string):
     # Split the SRT string into individual subtitle blocks
     subtitle_blocks = re.split(r'\n\d+\n', srt_string.strip())

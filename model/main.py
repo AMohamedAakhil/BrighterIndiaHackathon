@@ -5,6 +5,7 @@ import os
 from pytube import YouTube
 from clipper import Clipper
 from utils import *
+from test import sub_gen
 
 def get_sub(link):
     def download_360p_mp4_videos(url: str, outpath: str = "./", custom_filename: str = "my_video.mp4"):
@@ -70,7 +71,9 @@ def get_sub(link):
     clip.clip_video(start_time, end_time)
     fixed_subtitles = fix_subtitle_timing(res)
     final_subs = convert_srt_to_custom_format(fixed_subtitles)
-    subtitle_gen(filename, "./downloads/output/final_vid.mp4", final_subs)
+    sub_gen("./downloadsnew_vid.mp4", "./final.avi", final_subs)
+    with open("test.srt", "w") as text_file:
+        text_file.write(final_subs)
+    
 
     return final_subs
-
