@@ -19,10 +19,14 @@ def get_sub(link):
     audiofilename = "./generator/new_vid.mp3"
 
     video = mp.VideoFileClip(filename)
+<<<<<<< HEAD
     video.audio.write_audiofile(audiofilename)
     openai.api_key = "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"
 
     #openai.api_key = "OPENAI"
+=======
+    openai.api_key = "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"
+>>>>>>> c3bfef747f166d3a32db7b62e0c003251de79ee8
     
     result = openai.Audio.transcribe(
         model='whisper-1',
