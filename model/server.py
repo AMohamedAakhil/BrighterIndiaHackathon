@@ -18,5 +18,4 @@ app.add_middleware(
 @app.get("/get_sub")
 async def fetch_url_response(link: str):
     response = get_sub(link)
-    response.setHeader('Access-Control-Allow-Origin', '*');
     return response

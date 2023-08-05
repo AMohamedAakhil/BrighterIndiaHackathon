@@ -6,19 +6,21 @@ import {useState} from 'react';
 
 async function fetchData(link: string) {
 
-  const res = await fetch(`https://jsonplaceholder.typicode.com/todos/1`)
+  const res = await fetch(`http://127.0.0.1:8000/get_sub?link=https://www.youtube.com/watch?v=r0XlqgnruNw`)
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
  
-  return res.json()
+  return res
 }
 
 export default function Home() {
   const [search, setSearch] = useState("");
+  const [results, setResults] = useState<any>("");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const data = await fetchData(search)
+    setResults(data);
     console.log(data);
   }
   return (
@@ -38,7 +40,9 @@ export default function Home() {
         <Button onClick={(e) => handleSubmit(e)} type="submit">Search</Button>
     </div>
     </form>
-
+    <h1>
+      {results ? <RenderDetails choices={results} /> : null}
+    </h1>
     </div>
     </main>
   )
