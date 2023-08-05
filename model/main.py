@@ -2,7 +2,7 @@ import moviepy.editor as mp
 import requests
 import openai
 import os
-openai.api_key = os.environ.OPENAI_API_KEY
+openai.api_key = "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"
 from pytube import YouTube
 
 def get_sub(link):
@@ -22,8 +22,8 @@ def get_sub(link):
     filename = "./downloads/vid.mp4" 
 
     video = mp.VideoFileClip(filename)
-    openai.api_key = os.environ.OPENAI_API_KEY
-
+    openai.api_key = "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"
+    
     result = openai.Audio.transcribe(
         model='whisper-1',
         file=open(filename, 'rb')
