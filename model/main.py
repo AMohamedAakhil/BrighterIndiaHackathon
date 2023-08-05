@@ -2,7 +2,9 @@ import moviepy.editor as mp
 import requests
 import openai
 import os
-openai.api_key = "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"
+#from dotenv import load_dotenv
+
+openai.api_key = "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"
 from pytube import YouTube
 
 def get_sub(link):
