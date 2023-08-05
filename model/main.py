@@ -11,23 +11,12 @@ def get_sub(link):
     
     download_360p_mp4_videos(
             link,
-            "../generator/",
+            "./downloads/",
             "vid.mp4")
 
 
-    filename = "../generator/new_vid.mp4" 
-    audiofilename = "./generator/new_vid.mp3"
-
-    video = mp.VideoFileClip(filename)
-    video.audio.write_audiofile(audiofilename)
-    openai.api_key = "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"
-
-    #openai.api_key = "OPENAI"
-    
-    result = openai.Audio.transcribe(
-        model='whisper-1',
-        file=open(audiofilename, 'rb')
-    )
+    filename = "./downloads/vid.mp4" 
+    openai.api_key = ""
 
     def get_subtitles(file, subtitle_format='srt', **kwargs):
         url = 'https://api.openai.com/v1/audio/transcriptions'
@@ -58,3 +47,5 @@ def get_sub(link):
         ]
     )
     return response
+
+print(get_sub("https://www.youtube.com/watch?v=c_CZzQzuqGQ"))
