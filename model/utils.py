@@ -22,7 +22,7 @@ def subtitle_gen(video_path, output_path, subtitles1):
     frame_width = int(cap.get(3))
     frame_height = int(cap.get(4))
     fps = int(cap.get(5))
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
     subtitle_index = 0
     start_time = 0

@@ -70,7 +70,7 @@ def get_sub(link):
     clip.clip_video(start_time, end_time)
     fixed_subtitles = fix_subtitle_timing(res)
     final_subs = convert_srt_to_custom_format(fixed_subtitles)
-    subtitle_gen(filename, "/downloads", final_subs)
+    subtitle_gen(filename, "./downloads/output/final_vid.mp4", final_subs)
 
     return final_subs
 
