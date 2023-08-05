@@ -16,8 +16,6 @@ def get_sub(link):
 
 
     filename = "./downloads/vid.mp4" 
-
-    video = mp.VideoFileClip(filename)
     openai.api_key = "OPENAI"
     
     result = openai.Audio.transcribe(
